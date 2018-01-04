@@ -194,37 +194,27 @@ class AddQuestion:
                 choice = model.Choice_model(**mydata)
                 with orm.db.transaction():
                     qt.insert()
-                    reasurt = qt.query('select max(qt_id) from question')
-                    choice.question_qt_id = int(reasurt[0]['max(qt_id)'])
+                    choice.question_qt_id = qt.qt_id
                     choice.insert()
-                    qbhq.question_qt_id = choice.question_qt_id
-                    qbhq.questions_bank_qb_id = mydata.questions_bank_qb_id
-                    qbhq.insert()
+                    # qbhq.question_qt_id = choice.question_qt_id
+                    # qbhq.questions_bank_qb_id = mydata.questions_bank_qb_id
+                    # qbhq.insert()
                 response = util.Response(status=util.Status.__success__)
                 return util.objtojson(response)
             elif mydata.qt_type == 'coding':
                 coding = model.Coding_model(**mydata)
                 with orm.db.transaction():
                     qt.insert()
-                    reasurt = qt.query('select max(qt_id) from question')
-                    coding.question_qt_id = reasurt[0]['max(qt_id)']
-                    qt.qt_id=coding.question_qt_id
+                    coding.question_qt_id = qt.qt_id
+                    qt.qt_id = coding.question_qt_id
                     coding.insert()
-                    qbhq.question_qt_id = coding.question_qt_id
-                    qbhq.questions_bank_qb_id = mydata.questions_bank_qb_id
-                    result = qbhq.insertBackid()
-                    qbhq.qbhq_id = result[0]['max(qbhq_id)']
-                # os.mkdir('%s/%s'%(question_source,coding.question_qt_id))
-                # test_in = coding.co_test_answer_in.split('&&&')
-                # test_out = coding.co_test_answer_out.split('&&&')
-                # for k in range(1, len(test_in) - 1):
-                #     with open('%s/%s/%s.in' % (question_source,coding.question_qt_id,k), 'w') as f:
-                #         f.write(test_in[k])
-                #     with open('%s/%s/%s.out' % (question_source,coding.question_qt_id,k), 'w') as f:
-                #         f.write("%s"%test_out[k])
+                    # qbhq.question_qt_id = coding.question_qt_id
+                    # qbhq.questions_bank_qb_id = mydata.questions_bank_qb_id
+                    # result = qbhq.insertBackid()
+                    # qbhq.qbhq_id = result[0]['max(qbhq_id)']
                 exam_question = model.Exam_question_model()
                 exam_question.information_in_id = 1
-                exam_question.qt_id = qbhq.question_qt_id
+                exam_question.qt_id = qt.qt_id
                 exam_question.eq_qt_type = 'coding'
                 exam_question.eq_pre_score = 100
                 exam_question.eq_get_score = '-2'
@@ -232,18 +222,20 @@ class AddQuestion:
                 result = exam_question.insertBackid()
                 eq_id = result[0]['max(eq_id)']
                 while 1:
+                    break;
                     time.sleep(1)
                     exam_question = model.Exam_question_model.getByPK(eq_id)
-                    if exam_question.eq_get_score ==100:
+                    if exam_question.eq_get_score == 100:
                         response = util.Response(status=util.Status.__success__)
                         return util.objtojson(response)
-                    if exam_question.eq_get_score ==0:
+                    if exam_question.eq_get_score == 0:
                         exam_question.delete()
                         qbhq.delete()
                         coding.delete()
                         qt.delete()
                         response = util.Response(status=util.Status.__error__)
                         return util.objtojson(response)
+
             elif mydata.qt_type == 'filla':
                 Filla = model.Filla_model(**mydata)
                 with orm.db.transaction():
