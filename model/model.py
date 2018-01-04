@@ -110,7 +110,7 @@ class Question_model(Model):
     __table__ = 'question'
     __pk__ = 'qt_id'
     __attr__ = set(['qt_id','qt_type','qt_stem','qt_use_number','qt_right_number','qt_pre_rate','qt_diffculty','qt_node','knowledge_kl_id','qt_state'])
-    __insertable__ = set({'qt_type','qt_stem','qt_use_number','qt_right_number','qt_diffculty','qt_node','knowledge_kl_id','qt_state'})
+    __insertable__ = set({'qt_id','qt_type','qt_stem','qt_use_number','qt_right_number','qt_diffculty','qt_node','knowledge_kl_id','qt_state'})
     __updateable__ = set({'qt_type','qt_stem','qt_use_number','qt_right_number','qt_diffculty','qt_node','knowledge_kl_id','qt_state'})
     __notnull__ = set({'qt_type','qt_stem',})
     __attrnum__ = len(__attr__)
